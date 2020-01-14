@@ -26,8 +26,8 @@ class Generator(nn.Module):
             nn.Tanh(),
         )
 
-    def forward(self, noise, labels, code):
-        gen_input = torch.cat((noise, labels, code), -1)
+    def forward(self, noise, code):
+        gen_input = torch.cat((noise, code), -1)
         out = self.l1(gen_input)
         out = out.view(out.shape[0], 128, self.init_size, self.init_size)
         img = self.conv_blocks(out)
