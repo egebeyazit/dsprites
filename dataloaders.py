@@ -37,11 +37,11 @@ def get_fashion_mnist_dataloaders(batch_size=128,
 
 
 def get_dsprites_dataloader(batch_size=128,
-                            path_to_data='../dsprites-data/dsprites_data.npz'):
+                            path_to_data='../dsprites-data/dsprites_data.npz', imsize=32):
     """DSprites dataloader."""
     all_transforms = transforms.Compose([
         transforms.ToPILImage(),
-        transforms.Resize(32),
+        transforms.Resize(imsize),
         transforms.ToTensor()
     ])
     dsprites_data = DSpritesDataset(path_to_data,
