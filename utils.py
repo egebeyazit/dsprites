@@ -77,49 +77,20 @@ def get_MNIST_loader():
 
 def get_static_gen_input():
     # Static generator inputs for sampling
-    static_z = Variable(FloatTensor(np.zeros((opt.n_classes ** 2, opt.latent_dim))))
-    static_label = to_categorical(
-        np.array([num for _ in range(opt.n_classes) for num in range(opt.n_classes)]), num_columns=opt.n_classes
-    )
-    static_code = Variable(FloatTensor(np.zeros((opt.n_classes ** 2, opt.code_dim))))
-    return static_z, static_label, static_code
-
-
-def sample_image(generator, n_row, batches_done):
-    static_z, static_label, static_code = get_static_gen_input()
-    """Saves a grid of generated digits ranging from 0 to n_classes"""
-    # Static sample
-    z = Variable(FloatTensor(np.random.normal(0, 1, (n_row ** 2, opt.latent_dim))))
-    static_sample = generator(z, static_label, static_code)
-    save_image(static_sample.data, "images/static/%d.png" % batches_done, nrow=n_row, normalize=True)
-
-    # Get varied c1 and c2
-    zeros = np.zeros((n_row ** 2, 1))
-    c_varied = np.repeat(np.linspace(-1, 1, n_row)[:, np.newaxis], n_row, 0)
-    c1 = Variable(FloatTensor(np.concatenate((c_varied, zeros), -1)))
-    c2 = Variable(FloatTensor(np.concatenate((zeros, c_varied), -1)))
-    sample1 = generator(static_z, static_label, c1)
-    sample2 = generator(static_z, static_label, c2)
-    save_image(sample1.data, "images/varying_c1/%d.png" % batches_done, nrow=n_row, normalize=True)
-    save_image(sample2.data, "images/varying_c2/%d.png" % batches_done, nrow=n_row, normalize=True)
+    static_z = Variable(FloatTensor(np.zeros((opt.latent_dim ** 2, opt.latent_dim))))
+    static_code = Variable(FloatTensor(np.zeros((opt.latent_dim ** 2, opt.code_dim))))
+    return static_z, static_code
 
 
 def sample_image2(generator, n_row, batches_done):
-    static_z, static_label, static_code = get_static_gen_input()
-    """Saves a grid of generated digits ranging from 0 to n_classes"""
-    # Static sample
-    z = Variable(FloatTensor(np.random.normal(0, 1, (n_row ** 2, opt.latent_dim))))
-    static_sample = generator(z, static_label, static_code)
-    save_image(static_sample.data, "images/static/%d.png" % batches_done, nrow=n_row, normalize=True)
-
+    static_z, static_code = get_static_gen_input()
     zeros = np.zeros((n_row ** 2, 1))
     c_varied = np.repeat(np.linspace(-1, 1, n_row)[:, np.newaxis], n_row, 0)
-    # Get varied c's
     for i in range(opt.code_dim):
         l = [zeros] * opt.code_dim
         l[i] = c_varied
         c = Variable(FloatTensor(np.concatenate(tuple(l), -1)))
-        sample = generator(static_z, static_label, c)
+        sample = generator(static_z, c)
         name = 'images/varying_c' + str(i + 1) + '/%d.png' % batches_done
         save_image(sample.data, name, nrow=n_row, normalize=True)
 
