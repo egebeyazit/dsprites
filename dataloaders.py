@@ -40,9 +40,9 @@ def get_dsprites_dataloader(batch_size=128,
                             path_to_data='../dsprites-data/dsprites_data.npz'):
     """DSprites dataloader."""
     all_transforms = transforms.Compose([
-        transforms.ToTensor(),
-        transforms.Resize(32)
-        #transforms.ToTensor()
+        transforms.ToPILImage(),
+        transforms.Resize(32),
+        transforms.ToTensor()
     ])
     dsprites_data = DSpritesDataset(path_to_data,
                                     transform=all_transforms)
